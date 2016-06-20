@@ -4,14 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipChildren="false"
-    android:background="@drawable/png_icon"
+    android:background="#22bbcc"
     tools:context="com.qslll.expandingpager.MainActivity">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:autoLink="web"
-        android:text="https://ramotion.com" />
 
 
         <android.support.v4.view.ViewPager

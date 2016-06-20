@@ -9,6 +9,7 @@ import android.support.v4.util.Pair;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Explode;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -22,11 +23,10 @@ import com.qslll.library.fragments.QsContainFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements QsContainFragment.OnExpandingClickListener {
 
     private ViewPager viewPager;
     private List<QsContainFragment> lists = new ArrayList<>();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,16 +46,18 @@ public class MainActivity extends AppCompatActivity {
         lists.add(QsContainFragment.getInstance(new Fragment1(), new Fragment2()));
         lists.add(QsContainFragment.getInstance(new Fragment1(), new Fragment2()));
         lists.add(QsContainFragment.getInstance(new Fragment1(), new Fragment2()));
+        lists.add(QsContainFragment.getInstance(new Fragment1(), new Fragment2()));
+        lists.add(QsContainFragment.getInstance(new Fragment1(), new Fragment2()));
         //add expanding listener
-        for (QsContainFragment qs : lists) {
-            qs.setOnExpandingClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //v is front view
-                    startActivity(v.findViewById(R.id.img));
-                }
-            });
-        }
+//        for (QsContainFragment qs : lists) {
+//            qs.setOnExpandingClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    //v is front view
+//                    startActivity(v.findViewById(R.id.img));
+//                }
+//            });
+//        }
         viewPager.setOffscreenPageLimit(2);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -114,4 +116,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+    @Override
+    public void onClick(View v) {
+
+            startActivity(v.findViewById(R.id.img));
+    }
+
 }

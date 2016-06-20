@@ -4,6 +4,7 @@ package com.qslll.library.fragments;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -29,7 +30,7 @@ public class QsContainFragment extends Fragment {
     private ObjectAnimator objectAnimator;
 
     private float startY = 0;
-    private View.OnClickListener listener;
+    private OnExpandingClickListener mListener;
 
     //    public static Fragment getInstance(Fragment fragment1, Fragment fragment2) {
 //        return new QsContainFragment(fragment1, fragment2);
@@ -102,10 +103,21 @@ public class QsContainFragment extends Fragment {
                 if (objectAnimator == null)
                     doAnimation();
                 else
-                    listener.onClick(v);
+                    mListener.onClick(v);
             }
         });
         return inflate;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnExpandingClickListener) {
+            mListener = (OnExpandingClickListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnExpandingClickListener");
+        }
     }
 
     private void doAnimation() {
@@ -148,13 +160,17 @@ public class QsContainFragment extends Fragment {
         return objectAnimator == null;
     }
 
-    /**
-     * expanding out clickListener
-     *
-     * @param listener
-     */
-    public void setOnExpandingClickListener(View.OnClickListener listener) {
-        this.listener = listener;
+//    /**
+//     * expanding out clickListener
+//     *
+//     * @param listener
+//     */
+//    public void setOnExpandingClickListener(View.OnClickListener listener) {
+//        this.mListener = (OnExpandingClickListener) listener;
+//    }
+
+    public interface OnExpandingClickListener extends View.OnClickListener {
+
     }
 
 }
