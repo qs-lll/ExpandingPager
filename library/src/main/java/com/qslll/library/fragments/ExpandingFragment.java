@@ -1,11 +1,15 @@
 package com.qslll.library.fragments;
 
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -19,14 +23,17 @@ public abstract class ExpandingFragment extends Fragment {
 
     Fragment fragmentFront;
     Fragment fragmentBottom;
-    ChildTop childTop;
-    ChildBottom childBottom;
 
     private CardView back;
     private CardView front;
     private CardView layout3;
 
+    private float startY;
+
     float defaultCardElevation;
+    private OnExpandingClickListener mListener;
+    private ObjectAnimator frontAnimator;
+    private ObjectAnimator backAnimator;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -37,39 +44,63 @@ public abstract class ExpandingFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        this.fragmentFront = getFragmentFront();
+        this.fragmentFront = getFragmentTop();
         this.fragmentBottom = getFragmentBottom();
-        if(fragmentFront instanceof ChildTop){
-            childTop = (ChildTop) fragmentFront;
-        } else {
-            throw new RuntimeException("FragmentFront must implements ExpandingFragment.ChildTop");
-        }
-        if(fragmentBottom instanceof ChildBottom){
-            childBottom = (ChildBottom) fragmentBottom;
-        } else {
-            throw new RuntimeException("FragmentBottom must implements ExpandingFragment.ChildBottom");
-        }
 
         if (fragmentFront != null && fragmentBottom != null) {
             getChildFragmentManager().beginTransaction()
-                .replace(R.id.front, fragmentFront)
-                .replace(R.id.bottomLayout, fragmentBottom)
-                .commit();
-        }
-
-        if(childTop != null && childBottom != null) {
-            childTop.onAttachedToExpanding(this);
-            childBottom.onAttachedToExpanding(this);
+                    .replace(R.id.front, fragmentFront)
+                    .replace(R.id.bottomLayout, fragmentBottom)
+                    .commit();
         }
 
         back = (CardView) view.findViewById(R.id.back);
         front = (CardView) view.findViewById(R.id.front);
         layout3 = (CardView) view.findViewById(R.id.bottomLayout);
+        view.setOnClickListener(new OnClick());
+        setupDownGesture(view);
 
         defaultCardElevation = front.getCardElevation();
     }
 
-    public abstract Fragment getFragmentFront();
+    private void setupDownGesture(View view) {
+        view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                float my = 0;
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        startY = event.getY();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        my = event.getY();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if (isOpenend() && event.getY() - startY > 0) {
+                            close();
+                            return true;
+                        }
+                        break;
+                }
+                return false;
+            }
+        });
+
+    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnExpandingClickListener) {
+            mListener = (OnExpandingClickListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + "ExpandingFragment must implement OnExpandingClickListener");
+        }
+    }
+
+    public abstract Fragment getFragmentTop();
 
     public abstract Fragment getFragmentBottom();
 
@@ -94,27 +125,53 @@ public abstract class ExpandingFragment extends Fragment {
         layoutParams.height = (int) (front.getHeight() * SCALE_OPENED / 4 * SCALE_OPENED);
         layout3.setLayoutParams(layoutParams);
 
-        ViewCompat.animate(front)
-            .translationY(-front.getHeight() / 4);
-
-        ViewCompat.animate(back)
-            .scaleX(SCALE_OPENED)
-            .scaleY(SCALE_OPENED);
 
         ViewCompat.setPivotY(back, 0);
+
+        PropertyValuesHolder front1 = PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 0, -front.getHeight() / 4);
+        PropertyValuesHolder front2 = PropertyValuesHolder.ofFloat(View.SCALE_X, 1, 1);
+        frontAnimator = ObjectAnimator.ofPropertyValuesHolder(front, front1, front2);
+        PropertyValuesHolder backX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 1.2f);
+        PropertyValuesHolder backY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 1.2f);
+        backAnimator = ObjectAnimator.ofPropertyValuesHolder(back, backX, backY);
+        back.setPivotY(0);
+        frontAnimator.start();
+        backAnimator.start();
 
         front.setCardElevation(ELEVATION_OPENED);
     }
 
     public void close() {
-        ViewCompat.animate(front)
-            .translationY(0);
-        ViewCompat.animate(back)
-            .scaleY(SCALE_CLOSED)
-            .scaleX(SCALE_CLOSED);
+        if (frontAnimator != null) {
+            frontAnimator.reverse();
+            backAnimator.reverse();
+            backAnimator = null;
+            frontAnimator = null;
+        }
         front.setCardElevation(defaultCardElevation);
     }
 
+    class OnClick implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            if (isOpenend()) {
+                if (mListener != null) {
+                    mListener.onExpandingClick(v);
+                }
+            } else {
+                open();
+            }
+        }
+    }
+
+    public interface OnExpandingClickListener {
+        void onExpandingClick(View v);
+    }
+
+    /**
+     * Temporarily not used
+     */
     interface Child {
         void onAttachedToExpanding(ExpandingFragment expandingFragment);
 

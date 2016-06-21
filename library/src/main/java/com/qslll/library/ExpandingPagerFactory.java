@@ -15,17 +15,10 @@ import java.lang.ref.WeakReference;
 /**
  * Created by Qs on 16/6/20.
  */
-public class ExpandingViewPager {
+public class ExpandingPagerFactory {
 
-    final ViewPager viewPager;
 
-    public ExpandingViewPager(@NonNull ViewPager viewPager){
-        this.viewPager = viewPager;
-    }
-
-    @Nullable WeakReference<ExpandingFragment> currentFragmentWeakReference;
-
-    private ExpandingFragment getCurrentFragment(){
+    public static ExpandingFragment getCurrentFragment(ViewPager viewPager){
         if (viewPager.getAdapter() instanceof ExpandingViewPagerAdapter) {
             ExpandingViewPagerAdapter adapter = (ExpandingViewPagerAdapter) viewPager.getAdapter();
             Fragment fragment = adapter.getCurrentFragment();
@@ -36,7 +29,7 @@ public class ExpandingViewPager {
         return null;
     }
 
-    public void setupViewPager() {
+    public static void setupViewPager(final ViewPager viewPager) {
         ViewGroup.LayoutParams layoutParams = viewPager.getLayoutParams();
         layoutParams.width = ((Activity) viewPager.getContext()).getWindowManager().getDefaultDisplay().getWidth() / 7 * 5;
         layoutParams.height = (int) ((layoutParams.width / 0.75));
@@ -51,29 +44,29 @@ public class ExpandingViewPager {
 
         viewPager.setPageTransformer(true, new ExpandingViewPagerTransformer());
 
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                ExpandingFragment expandingFragment = getCurrentFragment();
-                if(expandingFragment != null && expandingFragment.isOpenend()){
-                    expandingFragment.close();
-                }
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
+//        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//            @Override
+//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//                ExpandingFragment expandingFragment = getCurrentFragment(viewPager);
+//                if(expandingFragment != null && expandingFragment.isOpenend()){
+//                    expandingFragment.close();
+//                }
+//            }
+//
+//            @Override
+//            public void onPageSelected(int position) {
+//
+//            }
+//
+//            @Override
+//            public void onPageScrollStateChanged(int state) {
+//
+//            }
+//        });
     }
 
-    public boolean onBackPressed() {
-        ExpandingFragment expandingFragment = getCurrentFragment();
+    public static boolean onBackPressed(ViewPager viewPager) {
+        ExpandingFragment expandingFragment = getCurrentFragment(viewPager);
         if(expandingFragment != null && expandingFragment.isOpenend()){
             expandingFragment.close();
             return true;

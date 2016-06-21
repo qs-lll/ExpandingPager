@@ -16,19 +16,17 @@ import android.widget.TextView;
 import com.qslll.expandingpager.InfoActivity;
 import com.qslll.expandingpager.R;
 import com.qslll.expandingpager.model.Travel;
-import com.qslll.library.fragments.ExpandingFragment;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class FragmentTop extends Fragment implements ExpandingFragment.ChildTop {
+public class FragmentTop extends Fragment {
 
     static final String ARG_TRAVEL = "ARG_TRAVEL";
     Travel travel;
 
     @Bind(R.id.image) ImageView image;
     @Bind(R.id.title) TextView title;
-    @Nullable ExpandingFragment expandingFragment;
 
     public static FragmentTop newInstance(Travel travel) {
         Bundle args = new Bundle();
@@ -62,28 +60,6 @@ public class FragmentTop extends Fragment implements ExpandingFragment.ChildTop 
             title.setText(travel.getName());
         }
 
-        image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (expandingFragment != null) {
-                    if (expandingFragment.isOpenend()) {
-                        startInfoActivity(view, travel);
-                    } else {
-                        expandingFragment.open();
-                    }
-                }
-            }
-        });
-    }
-
-    @Override
-    public void onAttachedToExpanding(ExpandingFragment expandingFragment) {
-        this.expandingFragment = expandingFragment;
-    }
-
-    @Override
-    public void onDetachedToExpanding() {
-        this.expandingFragment = null;
     }
 
     @SuppressWarnings("unchecked")

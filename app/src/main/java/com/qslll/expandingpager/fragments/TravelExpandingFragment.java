@@ -4,11 +4,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
-import com.qslll.expandingpager.R;
 import com.qslll.expandingpager.model.Travel;
 import com.qslll.library.fragments.ExpandingFragment;
 
 /**
+ * this is control fragment , Top and Bottom is child in it.
+ *
  * Created by florentchampigny on 21/06/2016.
  */
 public class TravelExpandingFragment extends ExpandingFragment {
@@ -33,11 +34,19 @@ public class TravelExpandingFragment extends ExpandingFragment {
         }
     }
 
+    /**
+     * include TopFragment
+     * @return
+     */
     @Override
-    public Fragment getFragmentFront() {
+    public Fragment getFragmentTop() {
         return FragmentTop.newInstance(travel);
     }
 
+    /**
+     * include BottomFragment
+     * @return
+     */
     @Override
     public Fragment getFragmentBottom() {
         return FragmentBottom.newInstance();

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/colorBackground"
-                android:clipChildren="false">
+    android:id="@+id/back"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground"
+    android:clipChildren="false">
 
 
     <android.support.v4.view.ViewPager
@@ -13,6 +14,6 @@
         android:layout_centerInParent="true"
         android:clipChildren="false"
         android:overScrollMode="never"
-        android:visibility="visible"/>
+        android:visibility="visible" />
 
 </RelativeLayout>
