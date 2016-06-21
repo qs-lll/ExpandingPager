@@ -30,7 +30,7 @@ protected void onCreate(Bundle savedInstanceState) {
 Just extends `ExpandingViewPagerAdapter` in your Fragment Adapter, which returns ExpandingFragment`
 
 ```java
-public class TravelViewPagerAdapter extends ExpandingViewPagerAdapter {
+public class CustomViewPagerAdapter extends ExpandingViewPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
@@ -65,7 +65,7 @@ public class CustomExpandingFragment extends ExpandingFragment {
 Create your top fragment implementing `ExpandingFragment.ChildTop`
 
 ```java
-public class FragmentTop extends Fragment implements ExpandingFragment.ChildTop {
+public class CustomFragmentTop extends Fragment implements ExpandingFragment.ChildTop {
     
     @Nullable ExpandingFragment expandingFragment;
     
@@ -104,7 +104,7 @@ public class FragmentTop extends Fragment implements ExpandingFragment.ChildTop 
 Create your top fragment implementing `ExpandingFragment.ChildTop`
 
 ```java
-public class FragmentBottom extends Fragment implements ExpandingFragment.ChildBottom {
+public class CustomFragmentBottom extends Fragment implements ExpandingFragment.ChildBottom {
     
     @Nullable ExpandingFragment expandingFragment;
 
