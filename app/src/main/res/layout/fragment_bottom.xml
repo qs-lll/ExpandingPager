@@ -8,7 +8,7 @@
     android:layout_marginTop="10dp"
     android:layout_marginBottom="10dp"
     android:orientation="vertical"
-    tools:context="com.qslll.expandingpager.fragments.Fragment2">
+    tools:context=".fragments.FragmentBottom">
 
     <TextView
         android:textAppearance="?android:attr/textAppearanceSmall"

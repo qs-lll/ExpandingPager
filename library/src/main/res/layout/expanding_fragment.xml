@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.qslll.library.fragments.QsContainFragment">
+    tools:context=".fragments.ExpandingFragment">
 
     <android.support.v7.widget.CardView
         android:id="@+id/back"
@@ -15,12 +15,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/bottomLayout"
-                android:background="@android:color/holo_purple"></LinearLayout>
+                android:background="@android:color/holo_purple"/>
 
             <android.support.v7.widget.CardView
                 android:id="@+id/bottomLayout"
@@ -28,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:background="@android:color/holo_blue_bright"
-                android:orientation="vertical"></android.support.v7.widget.CardView>
+                android:orientation="vertical"/>
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 
@@ -39,8 +38,4 @@
         android:layout_centerInParent="true"
         android:orientation="vertical" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="12313123123123" />
 </RelativeLayout>
