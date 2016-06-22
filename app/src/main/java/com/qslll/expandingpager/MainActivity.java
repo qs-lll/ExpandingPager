@@ -80,7 +80,9 @@ public class MainActivity extends AppCompatActivity implements ExpandingFragment
         List<Travel> travels = new ArrayList<>();
         for(int i=0;i<5;++i){
             travels.add(new Travel("Seychelles", R.drawable.seychelles));
+            travels.add(new Travel("Shang Hai", R.drawable.shh));
             travels.add(new Travel("New York", R.drawable.newyork));
+            travels.add(new Travel("castle", R.drawable.p1));
         }
         return travels;
     }
