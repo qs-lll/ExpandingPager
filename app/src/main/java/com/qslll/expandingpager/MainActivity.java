@@ -1,74 +1,58 @@
 package com.qslll.expandingpager;
 
 import android.annotation.TargetApi;
-import android.content.Intent;
+import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Explode;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.qslll.expandingpager.adapter.QsFragmentAdapter;
-import com.qslll.expandingpager.fragments.Fragment1;
-import com.qslll.expandingpager.fragments.Fragment2;
-import com.qslll.library.QsPagerTransformer;
-import com.qslll.library.Util;
-import com.qslll.library.fragments.QsContainFragment;
+import com.qslll.expandingpager.adapter.TravelViewPagerAdapter;
+import com.qslll.expandingpager.model.Travel;
+import com.qslll.library.ExpandingPagerFactory;
+import com.qslll.library.fragments.ExpandingFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements QsContainFragment.OnExpandingClickListener {
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
-    private ViewPager viewPager;
-    private List<QsContainFragment> lists = new ArrayList<>();
+public class MainActivity extends AppCompatActivity implements ExpandingFragment.OnExpandingClickListener{
+    @Bind(R.id.viewPager) ViewPager viewPager;
+    @Bind(R.id.back)ViewGroup back;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         setupWindowAnimations();
-        viewPager = (ViewPager) findViewById(R.id.viewPager);
-        viewPager.setPageTransformer(true, new QsPagerTransformer());
-        lists.add(QsContainFragment.getInstance(new Fragment1(), new Fragment2()));
-        lists.add(QsContainFragment.getInstance(new Fragment1(), new Fragment2()));
-        lists.add(QsContainFragment.getInstance(new Fragment1(), new Fragment2()));
-        lists.add(QsContainFragment.getInstance(new Fragment1(), new Fragment2()));
-        lists.add(QsContainFragment.getInstance(new Fragment1(), new Fragment2()));
-        lists.add(QsContainFragment.getInstance(new Fragment1(), new Fragment2()));
-        lists.add(QsContainFragment.getInstance(new Fragment1(), new Fragment2()));
-        lists.add(QsContainFragment.getInstance(new Fragment1(), new Fragment2()));
-        lists.add(QsContainFragment.getInstance(new Fragment1(), new Fragment2()));
-        lists.add(QsContainFragment.getInstance(new Fragment1(), new Fragment2()));
-        lists.add(QsContainFragment.getInstance(new Fragment1(), new Fragment2()));
-        lists.add(QsContainFragment.getInstance(new Fragment1(), new Fragment2()));
-        lists.add(QsContainFragment.getInstance(new Fragment1(), new Fragment2()));
-        lists.add(QsContainFragment.getInstance(new Fragment1(), new Fragment2()));
-        //add expanding listener
-//        for (QsContainFragment qs : lists) {
-//            qs.setOnExpandingClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    //v is front view
-//                    startActivity(v.findViewById(R.id.img));
-//                }
-//            });
-//        }
-        viewPager.setOffscreenPageLimit(2);
+
+        TravelViewPagerAdapter adapter = new TravelViewPagerAdapter(getSupportFragmentManager());
+        adapter.addAll(generateTravelList());
+        viewPager.setAdapter(adapter);
+
+
+        ExpandingPagerFactory.setupViewPager(viewPager);
+
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                QsContainFragment fragment = (QsContainFragment) lists.get(viewPager.getCurrentItem());
-                fragment.close();
+                ExpandingFragment expandingFragment = ExpandingPagerFactory.getCurrentFragment(viewPager);
+                if(expandingFragment != null && expandingFragment.isOpenend()){
+                    expandingFragment.close();
+                }
             }
 
             @Override
             public void onPageSelected(int position) {
-
             }
 
             @Override
@@ -76,18 +60,13 @@ public class MainActivity extends AppCompatActivity implements QsContainFragment
 
             }
         });
-        viewPager.setAdapter(new QsFragmentAdapter(getSupportFragmentManager(), lists));
-        Util.setupPager(viewPager);
     }
 
-    public void setupViewPager(ViewPager v) {
-
-        ViewGroup.LayoutParams layoutParams = v.getLayoutParams();
-        ((ViewGroup) v.getParent()).setClipChildren(false);
-        v.setClipChildren(false);
-        layoutParams.width = getWindowManager().getDefaultDisplay().getWidth() / 7 * 5;
-        layoutParams.height = (int) ((layoutParams.width / 0.75));
-
+    @Override
+    public void onBackPressed() {
+        if(!ExpandingPagerFactory.onBackPressed(viewPager)){
+            super.onBackPressed();
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -97,30 +76,32 @@ public class MainActivity extends AppCompatActivity implements QsContainFragment
         getWindow().setExitTransition(slideTransition);
     }
 
-    private void startActivity(View view) {
-        Intent i = new Intent(MainActivity.this, InfoActivity.class);
-        ActivityOptionsCompat transitionActivityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, new Pair<View, String>(view, "backimg"));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            startActivity(i, transitionActivityOptions.toBundle());
-        } else {
-            startActivity(i);
+    private List<Travel> generateTravelList(){
+        List<Travel> travels = new ArrayList<>();
+        for(int i=0;i<5;++i){
+            travels.add(new Travel("Seychelles", R.drawable.seychelles));
+            travels.add(new Travel("Shang Hai", R.drawable.shh));
+            travels.add(new Travel("New York", R.drawable.newyork));
+            travels.add(new Travel("castle", R.drawable.p1));
         }
+        return travels;
+    }
+    @SuppressWarnings("unchecked")
+    private void startInfoActivity(View view, Travel travel) {
+        Activity activity = this;
+        ActivityCompat.startActivity(activity,
+                InfoActivity.newInstance(activity, travel),
+                ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        activity,
+                        new Pair<>(view, getString(R.string.transition_image)))
+                        .toBundle());
     }
 
     @Override
-    public void onBackPressed() {
-        if (!lists.get(viewPager.getCurrentItem()).isClosed()) {
-            lists.get(viewPager.getCurrentItem()).close();
-        } else {
-            super.onBackPressed();
-        }
-
+    public void onExpandingClick(View v) {
+        //v is expandingfragment layout
+        View view = v.findViewById(R.id.image);
+        Travel travel = generateTravelList().get(viewPager.getCurrentItem());
+        startInfoActivity(view,travel);
     }
-
-    @Override
-    public void onClick(View v) {
-
-            startActivity(v.findViewById(R.id.img));
-    }
-
 }

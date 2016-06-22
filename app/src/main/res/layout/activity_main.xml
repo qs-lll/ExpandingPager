@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/back"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipChildren="false"
-    android:background="#22bbcc"
-    tools:context="com.qslll.expandingpager.MainActivity">
+    android:background="@color/colorBackground"
+    android:clipChildren="false">
 
 
-        <android.support.v4.view.ViewPager
-            android:clipChildren="false"
-            android:id="@+id/viewPager"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:overScrollMode="never"
-            android:visibility="visible" />
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:clipChildren="false"
+        android:overScrollMode="never"
+        android:visibility="visible" />
 
 </RelativeLayout>
