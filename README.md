@@ -3,7 +3,10 @@
 
 ExpandingPager is a card peek/pop controller
 
-[![gif](img/preview.gif)]()
+[![gif](img/ExpandingPager.gif)]()
+
+####SIZE & FRAGMENT AREA
+![](img/size1.png)
 
 #Setup
 
