@@ -11,7 +11,6 @@ Just extends `ExpandingViewPagerAdapter` in your Fragment Adapter and setup the 
 
 ```java
 ViewPager viewPager;
-ExpandingViewPager expandingViewPager;
 
 @Override
 protected void onCreate(Bundle savedInstanceState) {
@@ -20,8 +19,8 @@ protected void onCreate(Bundle savedInstanceState) {
     viewPager = (ViewPager) findViewById(...);
      
     viewPager.setAdapter( new CustomViewPagerAdapter(getSupportFragmentManager()) );
-    expandingViewPager = new ExpandingViewPager(viewPager);
-    expandingViewPager.setupViewPager();
+
+    ExpandingFactory.setupViewPager(ViewPager viewPager);
 }
 ```
 
@@ -61,41 +60,11 @@ public class CustomExpandingFragment extends ExpandingFragment {
 ##Fragments
 
 ###Top
-
-Create your top fragment implementing `ExpandingFragment.ChildTop`
-
+please do not set full screen click Event,it maybe can prevent the main click Event.
 ```java
-public class CustomFragmentTop extends Fragment implements ExpandingFragment.ChildTop {
+public class CustomFragmentTop extends Fragment  {
     
-    @Nullable ExpandingFragment expandingFragment;
-    
-    @Override
-    public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (expandingFragment != null) {
-                    if (expandingFragment.isOpenend()) {
-                        //start your activity 
-                    } else {
-                        expandingFragment.open();
-                    }
-                }
-            }
-        });
-    }
-
-
-    @Override
-    public void onAttachedToExpanding(ExpandingFragment expandingFragment) {
-        this.expandingFragment = expandingFragment;
-    }
-
-    @Override
-    public void onDetachedToExpanding() {
-        this.expandingFragment = null;
-    }
+  
 }
 ```
 
@@ -104,19 +73,9 @@ public class CustomFragmentTop extends Fragment implements ExpandingFragment.Chi
 Create your top fragment implementing `ExpandingFragment.ChildTop`
 
 ```java
-public class CustomFragmentBottom extends Fragment implements ExpandingFragment.ChildBottom {
+public class CustomFragmentBottom extends Fragment  {
     
-    @Nullable ExpandingFragment expandingFragment;
 
-    @Override
-    public void onAttachedToExpanding(ExpandingFragment expandingFragment) {
-        this.expandingFragment = expandingFragment;
-    }
-
-    @Override
-    public void onDetachedToExpanding() {
-        this.expandingFragment = null;
-    }
 }
 ```
 
@@ -126,7 +85,7 @@ public class CustomFragmentBottom extends Fragment implements ExpandingFragment.
 ```java
 @Override
 public void onBackPressed() {
-    if(!expandingViewPager.onBackPressed()){
+    if(!expandingViewPager.onBackPressed(viewPager)){
         super.onBackPressed();
     }
 }
