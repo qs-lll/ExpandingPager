@@ -1,6 +1,8 @@
 # ExpandingPager
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-ExpandingPager-green.svg?style=true)](https://android-arsenal.com/details/1/3747)
 
+##only support system 5.0/latest!!!😭who can solve before 5.0 support!!!
+
 ExpandingPager is a card peek/pop controller
 
 [![gif](img/ExpandingPager.gif)]()
