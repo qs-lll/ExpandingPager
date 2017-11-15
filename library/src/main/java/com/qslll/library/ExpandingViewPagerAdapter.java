@@ -27,10 +27,10 @@ public abstract class ExpandingViewPagerAdapter extends FragmentStatePagerAdapte
 
     @Override
     public void setPrimaryItem(ViewGroup container, int position, Object object) {
-        if (getCurrentFragment() != object && object instanceof Fragment) {
+        super.setPrimaryItem(container, position, object);
+        if (getCurrentFragment() != object) {
             currentFragmentReference = new WeakReference<>((Fragment) object);
         }
-        super.setPrimaryItem(container, position, object);
     }
 
 
