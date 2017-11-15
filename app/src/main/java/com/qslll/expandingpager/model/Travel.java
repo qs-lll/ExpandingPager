@@ -7,8 +7,8 @@ import android.os.Parcelable;
  * Created by florentchampigny on 21/06/2016.
  */
 public class Travel implements Parcelable{
-    String name;
-    int image;
+    private String name;
+    private int image;
 
     public Travel(String name, int image) {
         this.name = name;
